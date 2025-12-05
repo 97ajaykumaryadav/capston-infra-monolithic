@@ -12,11 +12,21 @@ parameters:
 
 pool: capston-infra-agent-pool
 
-# stages:
-# - stage: build
-#   displayName: terraform-init-plan
-#   jobs:
-#   - job: build
-#     displayName: build-job
-#     pool: capston-infra-agent-pool
-#     steps:
+stages:
+- stage: build
+  displayName: terraform-init-plan
+  jobs:
+  - job: build
+    displayName: build-job
+    pool: capston-infra-agent-pool
+    steps:
+    - task: TerraformTask@5
+      inputs:
+        provider: 'azurerm'
+        command: 'init'
+        workingDirectory: '$(System.DefaultWorkingDirectory)/environment/dev'
+        backendServiceArm: 'next-level-service-connection'
+        backendAzureRmResourceGroupName: 'rg-it'
+        backendAzureRmStorageAccountName: 'stcapstondevcic01'
+        backendAzureRmContainerName: 'capstoncontainer'
+        backendAzureRmKey: 'capstonfstate'
