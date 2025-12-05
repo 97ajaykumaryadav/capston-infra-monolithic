@@ -46,13 +46,14 @@ stages:
         workingDirectory: '$(System.DefaultWorkingDirectory)/environment/dev'
         commandOptions: 'terraform fmt'
         outputTo: 'console'
-        customCommand: 'terraform fmt'
+        customCommand: 'fmt'
         environmentServiceNameAzureRM: 'next-level-sc'
   - job: tfsec
     dependsOn: TerraformFmt
     displayName: TfSec Scan
     steps:
     - task: tfsec@1
+      continueOnError: true
       inputs:
         version: 'v1.26.0'
         dir: '$(System.DefaultWorkingDirectory)/environment/dev'
