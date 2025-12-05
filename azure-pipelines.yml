@@ -15,7 +15,7 @@ pool: capston-infra-agent-pool
 stages:
 - stage: build
   displayName: Pre-Commit / Static Analysis Stage
-  pool: Default
+  pool: capston-infra-agent-pool
   jobs: 
   - job: TerraformValidate
     displayName: Terraform Validate
