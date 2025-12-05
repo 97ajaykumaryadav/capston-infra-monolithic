@@ -104,7 +104,7 @@ stages:
       inputs:
         notifyUsers: 'ajaykumaryadav97@gmail.com'
 - stage: apply
-  dependsOn: ManualAppoval
+  dependsOn: ManualApproval
   displayName: Terraform Apply
   jobs:
   - job: TerraformApply
