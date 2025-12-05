@@ -14,11 +14,11 @@ pool: capston-infra-agent-pool
 
 stages:
 - stage: build
-  displayName: terraform-init-plan
-  jobs:
-  - job: build
-    displayName: build-job
-    pool: capston-infra-agent-pool
+  displayName: Pre-Commit / Static Analysis Stage
+  pool: Default
+  jobs: 
+  - job: TerraformValidate
+    displayName: Terraform Validate
     steps:
     - task: TerraformTask@5
       inputs:
@@ -30,3 +30,44 @@ stages:
         backendAzureRmStorageAccountName: 'stcapstondevcic01'
         backendAzureRmContainerName: 'capstoncontainer'
         backendAzureRmKey: 'capstonfstate'
+    - task: TerraformTask@5
+      inputs:
+        provider: 'azurerm'
+        command: 'validate'
+        workingDirectory: '$(System.DefaultWorkingDirectory)/environment/dev'
+  - job: TerraformFmt
+    dependsOn: TerraformValidate
+    displayName: Terraform FMT
+    steps:
+    - task: TerraformTask@5
+      inputs:
+        provider: 'azurerm'
+        command: 'custom'
+        workingDirectory: '$(System.DefaultWorkingDirectory)/environment/dev'
+        commandOptions: 'terraform fmt'
+        outputTo: 'console'
+        customCommand: 'terraform fmt'
+        environmentServiceNameAzureRM: 'next-level-sc'
+  - job: tfsec
+    dependsOn: TerraformFmt
+    displayName: TfSec Scan
+    steps:
+    - task: tfsec@1
+      inputs:
+        version: 'v1.26.0'
+        dir: '$(System.DefaultWorkingDirectory)/environment/dev'
+
+  - job: tflint
+    dependsOn: tfsec
+    displayName: TFLint
+    steps:
+    - task: PowerShell@2
+      continueOnError: true
+      inputs:
+        targetType: 'inline'
+        script: |
+          winget install TerraformLinters.tflint     
+          ls   
+          tflint
+        errorActionPreference: 'continue'        
+        workingDirectory: '$(System.DefaultWorkingDirectory)/environment/dev'
