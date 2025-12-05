@@ -1,0 +1,22 @@
+trigger:
+- main
+- feature/*
+
+parameters:
+- name: environment
+  type: string
+  values:
+  - dev
+  - prod
+  - qa
+
+pool: capston-infra-agent-pool
+
+# stages:
+# - stage: build
+#   displayName: terraform-init-plan
+#   jobs:
+#   - job: build
+#     displayName: build-job
+#     pool: capston-infra-agent-pool
+#     steps:
