@@ -9,14 +9,15 @@ trigger:
 #   - dev
 #   - prod
 
-pool: cloud-level-agent
+pool: capston-infra-agent-pool
+
 stages:
 - stage: build
   displayName: terraform-init-plan
   jobs:
   - job: build
     displayName: build-job
-    pool: cloud-level-agent
+    pool: capston-infra-agent-pool
     steps:
     - task: TerraformTask@5
       inputs:

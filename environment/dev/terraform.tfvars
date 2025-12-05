@@ -76,7 +76,7 @@ mssql_server = {
     mssql_server_version = "12.0"
     sql_adminusername = "dbusername"
     sql_adminpassword = "dbpassword"
-    db_name = mysql-capston-dev
+    db_name = "mysql-capston-dev"
     max_size_gb = 2
     
   }

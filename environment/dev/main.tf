@@ -25,6 +25,7 @@ depends_on = [ module.vnet, module.pip ]
 
 }
 module "mssql" {
+    depends_on = [ module.key_vault ]
   source = "../../modules/azurerm_database_server"
   mssql_server = var.mssql_server
 
