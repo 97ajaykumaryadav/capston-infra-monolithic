@@ -1,0 +1,4 @@
+variable "mssql_server" {
+    
+  
+}
