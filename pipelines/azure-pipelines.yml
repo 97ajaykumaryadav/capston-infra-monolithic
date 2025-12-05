@@ -1,0 +1,104 @@
+trigger:
+- main
+- feature/*
+
+# parameters:
+# - name: environment
+#   type: string
+#   values:
+#   - dev
+#   - prod
+
+pool: cloud-level-agent
+stages:
+- stage: build
+  displayName: terraform-init-plan
+  jobs:
+  - job: build
+    displayName: build-job
+    pool: cloud-level-agent
+    steps:
+    - task: TerraformTask@5
+      inputs:
+        provider: 'azurerm'
+        command: 'init'
+        workingDirectory: '$(System.DefaultWorkingDirectory)/environment/dev'
+        backendServiceArm: 'next-level-sc'
+        backendAzureRmResourceGroupName: 'rg-it'
+        backendAzureRmStorageAccountName: 'nextlevelstgac'
+        backendAzureRmContainerName: 'nextlevelcontainer'
+        backendAzureRmKey: 'autotfstate'
+    - task: TerraformTask@5
+      inputs:
+        provider: 'azurerm'
+        command: 'validate'
+        workingDirectory: '$(System.DefaultWorkingDirectory)/environment/dev'
+        environmentServiceNameAzureRM: 'next-level-sc'
+    - task: TerraformTask@5
+      inputs:
+        provider: 'azurerm'
+        command: 'plan'
+        workingDirectory: '$(System.DefaultWorkingDirectory)/environment/dev'
+        environmentServiceNameAzureRM: 'next-level-sc'
+- stage: scanning
+  jobs:
+  - job: scanning_job
+    pool: cloud-level-agent
+    continueOnError: true
+    steps:
+    - task: TerraformTask@5
+      inputs:
+        provider: 'azurerm'
+        command: 'custom'
+        outputTo: 'console'
+        customCommand: 'terraform fmt'
+        environmentServiceNameAzureRM: 'next-level-sc'
+    
+  - job: scanning_job1
+    pool: cloud-level-agent
+    continueOnError: true
+    steps:
+    - task: 'trivy@2'
+      inputs:
+        version: 'latest'
+        type: 'filesystem'
+        target: '$(System.DefaultWorkingDirectory)/environment/dev'
+        scanners: 'misconfig'
+        failOnSeverityThreshold: 'LOW'
+- stage: manual_validation
+  jobs:
+  - job: manual_validation
+    pool: server
+    steps:
+    - task: ManualValidation@1
+      inputs:
+        notifyUsers: 'ajaykumaryadav97@gmail.com'
+- stage: deploy
+  dependsOn: manual_validation
+  jobs:
+  - job: deploy_job
+    pool: cloud-level-agent
+    condition: eq(variables['Build.SourceBranch'], 'refs/heads/main') 
+    steps:
+    - task: TerraformTask@5
+      inputs:
+        provider: 'azurerm'
+        command: 'init'
+        workingDirectory: '$(System.DefaultWorkingDirectory)/environment/dev'
+        backendServiceArm: 'next-level-sc'
+        backendAzureRmResourceGroupName: 'rg-it'
+        backendAzureRmStorageAccountName: 'nextlevelstgac'
+        backendAzureRmContainerName: 'nextlevelcontainer'
+        backendAzureRmKey: 'autotfstate'
+    - task: TerraformTask@5
+      inputs:
+        provider: 'azurerm'
+        command: 'validate'
+        workingDirectory: '$(System.DefaultWorkingDirectory)/environment/dev'
+        environmentServiceNameAzureRM: 'next-level-sc'
+    - task: TerraformTask@5
+      inputs:
+        provider: 'azurerm'
+        command: 'apply'
+        workingDirectory: '$(System.DefaultWorkingDirectory)/environment/dev'
+        environmentServiceNameAzureRM: 'next-level-sc'
