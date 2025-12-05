@@ -44,7 +44,6 @@ stages:
         provider: 'azurerm'
         command: 'custom'
         workingDirectory: '$(System.DefaultWorkingDirectory)/environment/dev'
-        commandOptions: 'terraform fmt'
         outputTo: 'console'
         customCommand: 'fmt'
         environmentServiceNameAzureRM: 'next-level-sc'
