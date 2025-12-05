@@ -71,3 +71,25 @@ stages:
           tflint
         errorActionPreference: 'continue'        
         workingDirectory: '$(System.DefaultWorkingDirectory)/environment/dev'
+- stage: plan
+  displayName: Plan and Review stage
+  jobs:
+  - job: TerraformPlan
+    displayName: Terraform plan and Review 
+    pool: capston-infra-agent-pool
+    steps: 
+    - task: TerraformTask@5
+      inputs:
+        provider: 'azurerm'
+        command: 'init'
+        workingDirectory: '$(System.DefaultWorkingDirectory)/environment/dev'
+        backendServiceArm: 'next-level-sc'
+        backendAzureRmStorageAccountName: 'stcapstondevcic01'
+        backendAzureRmContainerName: 'capstoncontainer'
+        backendAzureRmKey: 'capstonfstate'
+    - task: TerraformTask@5
+      inputs:
+        provider: 'azurerm'
+        command: 'plan'
+        workingDirectory: '$(System.DefaultWorkingDirectory)/environment/dev'
+        environmentServiceNameAzureRM: 'next-level-sc'
