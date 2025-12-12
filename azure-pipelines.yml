@@ -11,7 +11,7 @@ parameters:
   - prod
 
 variables:
-- group: ajay
+# - group: ajay
 - name: workdir
   value: '$(System.DefaultWorkingDirectory)/environment/${{ variables.environment }}'
 - name: backendtfstate
@@ -121,27 +121,15 @@ stages:
       inputs:
         provider: 'azurerm'
         command: 'init'
-<<<<<<< HEAD
-        workingDirectory: '$(System.DefaultWorkingDirectory)/environment/dev'
-        backendServiceArm: 'next-level-sc'
-        backendAzureRmStorageAccountName: 'stcapstondevcic01'
-        backendAzureRmContainerName: 'capstoncontainer'
-        backendAzureRmKey: 'capstonfstate'
-=======
         workingDirectory: '$(workdir)'
         backendServiceArm: 'next-level-sc'
         backendAzureRmStorageAccountName: 'stcapstondevcic01'
         backendAzureRmContainerName: 'capstoncontainer'
         backendAzureRmKey: '$(backendtfstate)'
->>>>>>> db81057ce8236d16f56161e55c7325bbfedb1600
     - task: TerraformTask@5
       inputs:
         provider: 'azurerm'
         command: 'apply'
-<<<<<<< HEAD
-        workingDirectory: '$(System.DefaultWorkingDirectory)/environment/dev'
-=======
         workingDirectory: '$(workdir)'
->>>>>>> db81057ce8236d16f56161e55c7325bbfedb1600
         environmentServiceNameAzureRM: 'next-level-sc'
   
