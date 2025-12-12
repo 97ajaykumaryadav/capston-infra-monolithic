@@ -130,7 +130,8 @@ stages:
     - task: TerraformTask@5
       inputs:
         provider: 'azurerm'
-        command: 'apply'
+        command: 'destroy'
         workingDirectory: '$(workdir)'
         environmentServiceNameAzureRM: 'next-level-sc'
+
   
