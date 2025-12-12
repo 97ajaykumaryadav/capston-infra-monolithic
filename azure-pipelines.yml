@@ -91,6 +91,7 @@ stages:
         command: 'init'
         workingDirectory: '$(workdir)'
         backendServiceArm: 'next-level-sc'
+        backendAzureRmResourceGroupName: 'rg-it'
         backendAzureRmStorageAccountName: 'stcapstondevcic01'
         backendAzureRmContainerName: 'capstoncontainer'
         backendAzureRmKey: '$(backendtfstate)'
