@@ -11,9 +11,10 @@ parameters:
   - prod
 
 variables:
+- group: ajay
 - name: workdir
   value: '$(System.DefaultWorkingDirectory)/environment/${{ variables.environment }}'
-  name: backendtfstate
+- name: backendtfstate
   value: '${{ variables.environment }}.tfstate'
 
 pool: capston-infra-agent-pool
