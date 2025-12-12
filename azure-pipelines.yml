@@ -93,3 +93,36 @@ stages:
         command: 'plan'
         workingDirectory: '$(System.DefaultWorkingDirectory)/environment/dev'
         environmentServiceNameAzureRM: 'next-level-sc'
+- stage: ManualApproval
+  dependsOn: plan
+  displayName: Manual approval
+  pool: server
+  jobs: 
+  - job: ManualApproval
+    steps:
+    - task: ManualValidation@1
+      inputs:
+        notifyUsers: 'ajaykumaryadav97@gmail.com'
+- stage: apply
+  dependsOn: ManualApproval
+  displayName: Terraform Apply
+  jobs:
+  - job: TerraformApply
+    condition: eq(variables['Build.SourceBranch'], 'refs/heads/main')
+    steps:
+    - task: TerraformTask@5
+      inputs:
+        provider: 'azurerm'
+        command: 'init'
+        workingDirectory: '$(System.DefaultWorkingDirectory)/environment/dev'
+        backendServiceArm: 'next-level-sc'
+        backendAzureRmStorageAccountName: 'stcapstondevcic01'
+        backendAzureRmContainerName: 'capstoncontainer'
+        backendAzureRmKey: 'capstonfstate'
+    - task: TerraformTask@5
+      inputs:
+        provider: 'azurerm'
+        command: 'apply'
+        workingDirectory: '$(System.DefaultWorkingDirectory)/environment/dev'
+        environmentServiceNameAzureRM: 'next-level-sc'
+  

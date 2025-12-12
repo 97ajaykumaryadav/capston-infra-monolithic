@@ -3,7 +3,7 @@ terraform {
     resource_group_name = "rg-it"
     storage_account_name = "stcapstondevcic01"
     container_name = "capstoncontainer"
-    key = "dev.tfstate"
+    key = "qa.tfstate"
     
   }
   required_providers {
