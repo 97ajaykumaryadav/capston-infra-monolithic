@@ -15,7 +15,7 @@ variables:
 - name: workdir
   value: '$(System.DefaultWorkingDirectory)/environment/${{ variables.environment }}'
 - name: backendtfstate
-  value: '${{ variables.environment }}.tfstate'
+  value: '${{ parameters.environment }}.tfstate'
 
 pool: capston-infra-agent-pool
 
