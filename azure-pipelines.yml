@@ -3,14 +3,16 @@ trigger: none
 
 parameters:
 - name: environment
+  displayName: environment
   type: string
   values:
   - dev
-  - prod
   - qa
+  - prod
+
 variables:
 - name: workdir
-  value: '$(System.DefaultWorkingDirectory)/environment/dev'
+  value: '$(System.DefaultWorkingDirectory)/environment/${{ variables.environment }}'
 
 pool: capston-infra-agent-pool
 
