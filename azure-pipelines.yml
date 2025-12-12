@@ -13,6 +13,8 @@ parameters:
 variables:
 - name: workdir
   value: '$(System.DefaultWorkingDirectory)/environment/${{ variables.environment }}'
+  name: backendtfstate
+  value: '${{ variables.environment }}.tfstate'
 
 pool: capston-infra-agent-pool
 
@@ -33,7 +35,7 @@ stages:
         backendAzureRmResourceGroupName: 'rg-it'
         backendAzureRmStorageAccountName: 'stcapstondevcic01'
         backendAzureRmContainerName: 'capstoncontainer'
-        backendAzureRmKey: 'capstonfstate'
+        backendAzureRmKey: '$(backendtfstate)'
     - task: TerraformTask@5
       inputs:
         provider: 'azurerm'
@@ -90,7 +92,7 @@ stages:
         backendServiceArm: 'next-level-sc'
         backendAzureRmStorageAccountName: 'stcapstondevcic01'
         backendAzureRmContainerName: 'capstoncontainer'
-        backendAzureRmKey: 'capstonfstate'
+        backendAzureRmKey: '$(backendtfstate)'
     - task: TerraformTask@5
       inputs:
         provider: 'azurerm'
@@ -122,7 +124,7 @@ stages:
         backendServiceArm: 'next-level-sc'
         backendAzureRmStorageAccountName: 'stcapstondevcic01'
         backendAzureRmContainerName: 'capstoncontainer'
-        backendAzureRmKey: 'capstonfstate'
+        backendAzureRmKey: '$(backendtfstate)'
     - task: TerraformTask@5
       inputs:
         provider: 'azurerm'
