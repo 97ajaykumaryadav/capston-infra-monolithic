@@ -9,6 +9,9 @@ parameters:
   - dev
   - prod
   - qa
+variables:
+- name: workdir
+  value: $(System.DefaultWorkingDirectory)/environment/${{ variables.parameters }}
 
 pool: capston-infra-agent-pool
 
@@ -24,7 +27,7 @@ stages:
       inputs:
         provider: 'azurerm'
         command: 'init'
-        workingDirectory: '$(System.DefaultWorkingDirectory)/environment/dev'
+        workingDirectory: ${{workdir}}
         backendServiceArm: 'next-level-sc'
         backendAzureRmResourceGroupName: 'rg-it'
         backendAzureRmStorageAccountName: 'stcapstondevcic01'
