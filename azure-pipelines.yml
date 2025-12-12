@@ -11,7 +11,7 @@ parameters:
   - qa
 variables:
 - name: workdir
-  value: $(System.DefaultWorkingDirectory)/environment/${{ variables.parameters }}
+  value: $(System.DefaultWorkingDirectory)/environment/${{ parameters.environment }}
 
 pool: capston-infra-agent-pool
 
@@ -27,7 +27,7 @@ stages:
       inputs:
         provider: 'azurerm'
         command: 'init'
-        workingDirectory: ${{workdir}}
+        workingDirectory: $(workdir)
         backendServiceArm: 'next-level-sc'
         backendAzureRmResourceGroupName: 'rg-it'
         backendAzureRmStorageAccountName: 'stcapstondevcic01'
@@ -37,7 +37,7 @@ stages:
       inputs:
         provider: 'azurerm'
         command: 'validate'
-        workingDirectory: '$(System.DefaultWorkingDirectory)/environment/dev'
+        workingDirectory: $(workdir)
   - job: TerraformFmt
     dependsOn: TerraformValidate
     displayName: Terraform FMT
@@ -46,7 +46,7 @@ stages:
       inputs:
         provider: 'azurerm'
         command: 'custom'
-        workingDirectory: '$(System.DefaultWorkingDirectory)/environment/dev'
+        workingDirectory: $(workdir)
         outputTo: 'console'
         customCommand: 'fmt'
         environmentServiceNameAzureRM: 'next-level-sc'
@@ -58,7 +58,7 @@ stages:
       continueOnError: true
       inputs:
         version: 'v1.26.0'
-        dir: '$(System.DefaultWorkingDirectory)/environment/dev'
+        dir: $(workdir)
 
   - job: tflint
     dependsOn: tfsec
@@ -73,7 +73,7 @@ stages:
           ls   
           tflint
         errorActionPreference: 'continue'        
-        workingDirectory: '$(System.DefaultWorkingDirectory)/environment/dev'
+        workingDirectory: $(workdir)
 - stage: plan
   displayName: Plan and Review stage
   jobs:
@@ -85,7 +85,7 @@ stages:
       inputs:
         provider: 'azurerm'
         command: 'init'
-        workingDirectory: '$(System.DefaultWorkingDirectory)/environment/dev'
+        workingDirectory: $(workdir)
         backendServiceArm: 'next-level-sc'
         backendAzureRmStorageAccountName: 'stcapstondevcic01'
         backendAzureRmContainerName: 'capstoncontainer'
@@ -94,7 +94,7 @@ stages:
       inputs:
         provider: 'azurerm'
         command: 'plan'
-        workingDirectory: '$(System.DefaultWorkingDirectory)/environment/dev'
+        workingDirectory: $(workdir)
         environmentServiceNameAzureRM: 'next-level-sc'
 - stage: ManualApproval
   dependsOn: plan
@@ -117,7 +117,7 @@ stages:
       inputs:
         provider: 'azurerm'
         command: 'init'
-        workingDirectory: '$(System.DefaultWorkingDirectory)/environment/dev'
+        workingDirectory: $(workdir)
         backendServiceArm: 'next-level-sc'
         backendAzureRmStorageAccountName: 'stcapstondevcic01'
         backendAzureRmContainerName: 'capstoncontainer'
@@ -126,6 +126,6 @@ stages:
       inputs:
         provider: 'azurerm'
         command: 'apply'
-        workingDirectory: '$(System.DefaultWorkingDirectory)/environment/dev'
+        workingDirectory: $(workdir)
         environmentServiceNameAzureRM: 'next-level-sc'
   
