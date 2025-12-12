@@ -13,7 +13,7 @@ parameters:
 variables:
 # - group: ajay
 - name: workdir
-  value: '$(System.DefaultWorkingDirectory)/environment/${{ variables.environment }}'
+  value: '$(System.DefaultWorkingDirectory)/environment/${{ parameters.environment }}'
 - name: backendtfstate
   value: '${{ parameters.environment }}.tfstate'
 
